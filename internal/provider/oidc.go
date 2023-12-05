@@ -3,16 +3,17 @@ package provider
 import (
 	"context"
 	"errors"
-
 	"github.com/coreos/go-oidc"
+
 	"golang.org/x/oauth2"
 )
 
 // OIDC provider
 type OIDC struct {
-	IssuerURL    string `long:"issuer-url" env:"ISSUER_URL" description:"Issuer URL"`
-	ClientID     string `long:"client-id" env:"CLIENT_ID" description:"Client ID"`
-	ClientSecret string `long:"client-secret" env:"CLIENT_SECRET" description:"Client Secret" json:"-"`
+	IssuerURL         string `long:"issuer-url" env:"ISSUER_URL" description:"Issuer URL"`
+	IssuerURLInternal string `long:"issuer-url-internal" env:"ISSUER_URL_INTERNAL" description:"Issuer URL for in cluster validation"`
+	ClientID          string `long:"client-id" env:"CLIENT_ID" description:"Client ID"`
+	ClientSecret      string `long:"client-secret" env:"CLIENT_SECRET" description:"Client Secret" json:"-"`
 
 	OAuthProvider
 
@@ -36,7 +37,7 @@ func (o *OIDC) Setup() error {
 	o.ctx = context.Background()
 
 	// Try to initiate provider
-	o.provider, err = oidc.NewProvider(o.ctx, o.IssuerURL)
+	o.provider, err = oidc.NewProvider(o.ctx, o.IssuerURLInternal)
 	if err != nil {
 		return err
 	}
